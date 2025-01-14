@@ -17,7 +17,7 @@ stryker_raw = data.frame()
 for(xs in 1:nrow(stryker_startstop)){
   print(xs)
   
-  temp <- read.csv("C:/Users/eholmes/OneDrive - California Department of Water Resources/Documents/Projects/eDNA/data/Sample20250108/RouteHistoryFullBkup_DWRBoat_Jan8.csv", 
+  temp <- read.csv("data/Survey01_20250108/RouteHistoryFullBkup_DWRBoat_Jan8.csv", 
                    skip = stryker_startstop[xs, "start"] - 1, nrow = stryker_startstop[xs, "end"] - stryker_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -60,7 +60,7 @@ phantom_raw = data.frame()
 for(xs in 1:nrow(phantom_startstop)){
   print(xs)
   
-  temp <- read.csv("C:/Users/eholmes/OneDrive - California Department of Water Resources/Documents/Projects/eDNA/data/Sample20250108/20250108_RouteHistory_CFS.csv", 
+  temp <- read.csv("data/Survey01_20250108/20250108_RouteHistory_CFS.csv", 
                    skip = phantom_startstop[xs, "start"] - 1, nrow = phantom_startstop[xs, "end"] - phantom_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -103,7 +103,7 @@ scrutiny_raw = data.frame()
 for(xs in 1:nrow(scrutiny_startstop)){
   print(xs)
   
-  temp <- read.csv("C:/Users/eholmes/OneDrive - California Department of Water Resources/Documents/Projects/eDNA/data/Sample20250108/RouteHistoryFullBkup_CDFW Jan8.csv", 
+  temp <- read.csv("data/Survey01_20250108/RouteHistoryFullBkup_CDFW Jan8.csv", 
                    skip = scrutiny_startstop[xs, "start"] - 1, nrow = scrutiny_startstop[xs, "end"] - scrutiny_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -292,7 +292,7 @@ for(i in 1:nrow(vessels)){
     facet_grid(. ~ xs_cor))
 
 
-png("C:/Users/eholmes/OneDrive - California Department of Water Resources/Documents/Projects/eDNA/output/eDNA_vessel_spacing_20250108_%02d.png",
+png("output/eDNA_vessel_spacing_20250108_%02d.png",
     height = 7, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
@@ -301,7 +301,7 @@ cowplot::plot_grid(v_tracks_809, v_tracks_812,
 
 dev.off()
 
-png("C:/Users/eholmes/OneDrive - California Department of Water Resources/Documents/Projects/eDNA/output/eDNA_vessel_velocity_20250108_%02d.png",
+png("output/eDNA_vessel_velocity_20250108_%02d.png",
     height = 10, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
@@ -310,51 +310,3 @@ cowplot::plot_grid(v_tracks_809, v_tracks_812,
                    align = "v", nrow = 3)
 
 dev.off()
-
-
-# Use geographic coordinates ----------------------------------------------
-
-bbox <- c(left = -123, bottom = 34, right = -73, top = 42)
-osm_map <- get_map(location = bbox, source = "osm", maptype = "terrain-background")
-(v_spacing_809_ggmap <- ggmap() + 
-   geom_line(data = vessels[vessels$xs_cor %in% c("809-xs1","809-xs2","809-xs3"),], 
-             aes(x = timestamp, y = stryker2phantom),color = "cyan4", linewidth = 1) +
-   geom_line(data = vessels[vessels$xs_cor %in% c("809-xs1","809-xs2","809-xs3"),],
-             aes(x = timestamp, y = scrutiny2phantom), linewidth = 1) +
-   # geom_line(aes(y = stryker2scrutiny), color = "blue",linewidth = 1) + 
-   theme_bw() + labs(y = "Distance (m)") + 
-   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-         axis.text.y = element_text(angle = 90, hjust = .5)) +
-   ylim(0,250) + coord_fixed() +
-   facet_grid(. ~ xs_cor, scales = "free"))
-
-
-
-(v_spacing_812_ggmap <- ggplot(vessels[vessels$xs_cor %in% c("812-xs1","812-xs2","812-xs3"),], 
-                         aes(x = timestamp, y = stryker2phantom)) + 
-    geom_line(color = "cyan4", linewidth = 1) +
-    geom_line(aes(y = scrutiny2phantom), linewidth = 1) + 
-    theme_bw() + labs(y = "Distance (m)") + 
-    theme(axis.text.x = element_text(angle = 45, hjust = 1),
-          axis.text.y = element_text(angle = 90, hjust = .5)) +
-    ylim(0,250) +
-    facet_grid(. ~ xs_cor, scales = "free"))
-
-library(tmap)
-library(tmaptools)
-library(sf)
-library(OpenStreetMap)
-# Definetmap# Define Bounding Box
-bbox <- c(left = -123, bottom = 34, right = -73, top = 42)
-
-# Fetch Basemap
-basemap <- read_osm(bbox, type = "bing", zoom=6)  # Adjust 'zoom' level as needed; requires a Bing API key
-
-# Plotting with tmap
-tm_shape(basemap) +
-  tm_rgb() +
-  tm_shape(coordinates) +
-  tm_dots(col = "red", size = 0.5) +
-  tm_text("city", just = "top", size = 0.8, col = "blue") +
-  tm_layout(title = "GPS Coordinates with Satellite Imagery",
-            legend.outside = TRUE
