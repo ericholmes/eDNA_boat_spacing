@@ -234,8 +234,8 @@ for(i in 1:nrow(vessels)){
 (v_spacing_809 <- ggplot(vessels[vessels$xs_cor %in% c("809-xs1","809-xs2","809-xs3"),], 
                          aes(x = timestamp, y = stryker2phantom)) + 
    geom_line(color = "cyan4", linewidth = 1) +
-   geom_line(aes(y = scrutiny2phantom), linewidth = 1) +
-   # geom_line(aes(y = stryker2scrutiny), color = "blue",linewidth = 1) + 
+   geom_line(aes(y = cdfw2phantom), linewidth = 1) +
+   # geom_line(aes(y = stryker2cdfw), color = "blue",linewidth = 1) + 
    theme_bw() + labs(y = "Distance (m)") + 
    theme(axis.text.x = element_text(angle = 45, hjust = 1),
          axis.text.y = element_text(angle = 90, hjust = .5)) +
@@ -245,7 +245,7 @@ for(i in 1:nrow(vessels)){
 (v_spacing_812 <- ggplot(vessels[vessels$xs_cor %in% c("812-xs1","812-xs2","812-xs3"),], 
                          aes(x = timestamp, y = stryker2phantom)) + 
     geom_line(color = "cyan4", linewidth = 1) +
-    geom_line(aes(y = scrutiny2phantom), linewidth = 1) + 
+    geom_line(aes(y = cdfw2phantom), linewidth = 1) + 
     theme_bw() + labs(y = "Distance (m)") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1),
           axis.text.y = element_text(angle = 90, hjust = .5)) +
@@ -264,8 +264,8 @@ for(i in 1:nrow(vessels)){
                                vessels$phantom_velocity < 10 & is.na(vessels$phantom_velocity) == F, ],
               aes(y = phantom_velocity), color = "salmon3", linewidth = 1, stat = "smooth", span = .25) +
     geom_line(data = vessels[vessels$xs_cor %in% c("809-xs1","809-xs2","809-xs3") &
-                               vessels$scrutiny_velocity < 10 & is.na(vessels$scrutiny_velocity) == F, ],
-              aes(y = scrutiny_velocity), linewidth = 1, alpha = .25) +
+                               vessels$cdfw_velocity < 10 & is.na(vessels$cdfw_velocity) == F, ],
+              aes(y = cdfw_velocity), linewidth = 1, alpha = .25) +
     theme_bw() + labs(y = "Velocity (mph)") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1),
           axis.text.y = element_text(angle = 90, hjust = .5)) +
@@ -284,8 +284,8 @@ for(i in 1:nrow(vessels)){
                                vessels$phantom_velocity < 10 & is.na(vessels$phantom_velocity) == F, ],
               aes(y = phantom_velocity), color = "salmon3", linewidth = 1, stat = "smooth", span = .25) +
     geom_line(data = vessels[vessels$xs_cor %in% c("812-xs1","812-xs2","812-xs3") &
-                               vessels$scrutiny_velocity < 10 & is.na(vessels$scrutiny_velocity) == F, ],
-              aes(y = scrutiny_velocity), linewidth = 1) +
+                               vessels$cdfw_velocity < 10 & is.na(vessels$cdfw_velocity) == F, ],
+              aes(y = cdfw_velocity), linewidth = 1) +
     theme_bw() + labs(y = "Velocity (mph)") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1),
           axis.text.y = element_text(angle = 90, hjust = .5)) +
@@ -314,7 +314,7 @@ for(i in 1:nrow(vessels)){
     facet_grid(. ~ xs_cor))
 
 
-png("output/eDNA_vessel_spacing_20250108_%02d.png",
+png("output/eDNA_vessel_spacing_20250122_%02d.png",
     height = 7, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
@@ -323,7 +323,7 @@ cowplot::plot_grid(v_tracks_809, v_tracks_812,
 
 dev.off()
 
-png("output/eDNA_vessel_velocity_20250108_%02d.png",
+png("output/eDNA_vessel_velocity_20250122_%03d.png",
     height = 10, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
