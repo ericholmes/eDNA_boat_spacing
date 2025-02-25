@@ -12,7 +12,7 @@ library(zoo)
 stryker_startstop <- data.frame(boat = rep("stryker",6), 
                                 site = c(rep("812", 3), rep("809", 3)),
                                 start = c(7, 80, 153, 187, 246, 298), 
-                                end = c(76, 149, 183, 243, 294, 336))
+                                end = c(76, 149, 183, 242, 294, 336))
 
 stryker = data.frame()
 stryker_raw = data.frame()
@@ -113,10 +113,10 @@ phantom$boat = "Phantom"
 colnames(phantom) <- c("site", "xs", "timestamp", "lat_ph", "lon_ph", "boat")
 
 ## CDFW ---- now 
-cdfw_startstop <- data.frame(boat = rep("cdfw", 6), 
-                                site = c(rep("812", 3), rep("809", 3)),
-                                start = c(7, 235, 309), 
-                                end = c(231, 305, 336))
+cdfw_startstop <- data.frame(boat = rep("cdfw", 2), 
+                                site = c(rep("812", 1), rep("809", 1)),
+                                start = c(7, 235), 
+                                end = c(231, 305))
 
 
 cdfw = data.frame()
