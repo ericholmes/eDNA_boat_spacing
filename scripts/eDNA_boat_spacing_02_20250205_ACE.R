@@ -24,6 +24,15 @@ for(xs in 1:nrow(stryker_startstop)){
   
   temp$timestamp <- as.POSIXct(temp$datetime, format = "%Y-%m-%dT%H:%M:%SZ", tz = "America/Los_Angeles")
   
+  df <- data.frame(
+    timestamp = c("2025-03-10T12:30:00Z", "2025-03-10T15:45:00Z"))
+  
+  # Convert the timestamp to a POSIXct object
+  temp$timestamp <- ymd_hms(temp$timestamp, tz = "UTC")
+  
+  # Convert it to Pacific Time (PT)
+  temp$timestamp_pacific <- with_tz(temp$timestamp, tzone = "America/Los_Angeles")
+  
   complete_timestamps <- seq(min(temp$timestamp), max(temp$timestamp), by = "1 sec")
   
   merged_data <- data.frame(timestamp = complete_timestamps) %>%
