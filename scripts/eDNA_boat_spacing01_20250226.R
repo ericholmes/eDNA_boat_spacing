@@ -7,9 +7,9 @@ library(zoo)
 
 ## Stryker ----
 stryker_startstop <- data.frame(boat = rep("stryker",6), 
-                        site = c(rep("812", 3), rep("809", 3)),
-                        start = c(7, 83, 145, 168, 238, 297), 
-                        end = c(79, 141, 164, 234, 293, 334))
+                                site = c(rep("812", 3), rep("809", 3)),
+                                start = c(7, 56, 119, 146, 213, 285), 
+                                end = c(52, 115, 142, 209, 281, 352))
 
 stryker = data.frame()
 stryker_raw = data.frame()
@@ -17,19 +17,12 @@ stryker_raw = data.frame()
 for(xs in 1:nrow(stryker_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey01_20250108/RouteHistoryFullBkup_DWRBoat_Jan8.csv", 
+  temp <- read.csv("data/Survey04_20250226/RouteHistoryFullBkup_DWR Feb26.csv", 
                    skip = stryker_startstop[xs, "start"] - 1, nrow = stryker_startstop[xs, "end"] - stryker_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
   
   temp$timestamp <- as.POSIXct(temp$datetime, format = "%Y-%m-%dT%H:%M:%SZ", tz = "America/Los_Angeles")
-
-  # Convert the timestamp to a POSIXct object
-  temp$timestamp <- ymd_hms(temp$timestamp, tz = "UTC")
-  
-  # Convert it to Pacific Time (PT)
-  temp$timestamp <- with_tz(temp$timestamp, tzone = "America/Los_Angeles")
-  
   
   complete_timestamps <- seq(min(temp$timestamp), max(temp$timestamp), by = "1 sec")
   
@@ -57,9 +50,9 @@ colnames(stryker) <- c("site", "xs", "timestamp", "lat_st", "lon_st", "boat")
 
 ## Phantom ----
 phantom_startstop <- data.frame(boat = rep("phantom", 6), 
-                        site = c(rep("812", 3), rep("809", 3)),
-                        start = c(7, 177, 292, 371, 486, 612), 
-                        end = c(173, 288, 367, 482, 608, 697))
+                                site = c(rep("812", 3), rep("809", 3)),
+                                start = c(7, 48, 88, 117, 174, 222), 
+                                end = c(44, 84, 113, 170, 218, 261))
 
 phantom = data.frame()
 phantom_raw = data.frame()
@@ -67,17 +60,13 @@ phantom_raw = data.frame()
 for(xs in 1:nrow(phantom_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey01_20250108/20250108_RouteHistory_CFS.csv", 
+  temp <- read.csv("data/Survey04_20250226/20250226_RouteHistory_CFSBoat Feb26.csv", 
                    skip = phantom_startstop[xs, "start"] - 1, nrow = phantom_startstop[xs, "end"] - phantom_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
   
   temp$timestamp <- as.POSIXct(temp$datetime, format = "%Y-%m-%dT%H:%M:%SZ", tz = "America/Los_Angeles")
-  # Convert the timestamp to a POSIXct object
-  temp$timestamp <- ymd_hms(temp$timestamp, tz = "UTC")
   
-  # Convert it to Pacific Time (PT)
-  temp$timestamp <- with_tz(temp$timestamp, tzone = "America/Los_Angeles")
   complete_timestamps <- seq(min(temp$timestamp), max(temp$timestamp), by = "1 sec")
   
   merged_data <- data.frame(timestamp = complete_timestamps) %>%
@@ -85,7 +74,7 @@ for(xs in 1:nrow(phantom_startstop)){
   
   interpolated_data <- merged_data %>%
     mutate(lat = na.approx(lat, rule = 2),
-      lon = na.approx(lon, rule = 2))
+           lon = na.approx(lon, rule = 2))
   
   interpolated_data$xs <- paste0(phantom_startstop[xs, "site"], "-xs", xs)
   temp$xs <- paste0(phantom_startstop[xs, "site"], "-xs", xs)
@@ -102,30 +91,24 @@ for(xs in 1:nrow(phantom_startstop)){
 phantom$boat = "Phantom"
 colnames(phantom) <- c("site", "xs", "timestamp", "lat_ph", "lon_ph", "boat")
 
-## Scrutiny ---- now 
-scrutiny_startstop <- data.frame(boat = rep("scrutiny", 1), 
-                                site = c(rep("809", 1)),
-                                start = c(7), 
-                                end = c(34))
+## cdfw ---- now 
+cdfw_startstop <- data.frame(boat = rep("cdfw", 6), 
+                             site = c(rep("812", 3), rep("809", 3)),
+                             start = c(2,9,21,34,45,58), 
+                             end = c(7,19,32,43,56,67))
 
-scrutiny = data.frame()
-scrutiny_raw = data.frame()
+cdfw = data.frame()
+cdfw_raw = data.frame()
 
-for(xs in 1:nrow(scrutiny_startstop)){
+for(xs in 1:nrow(cdfw_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey01_20250108/RouteHistoryFullBkup_CDFW Jan8.csv", 
-                   skip = scrutiny_startstop[xs, "start"] - 1, nrow = scrutiny_startstop[xs, "end"] - scrutiny_startstop[xs, "start"], header = F)
+  temp <- read.csv("data/Survey04_20250226/RouteHistoryFullBkup_CDFW Feb26_updated.csv", 
+                   skip = cdfw_startstop[xs, "start"] - 1, nrow = cdfw_startstop[xs, "end"] - cdfw_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
   
   temp$timestamp <- as.POSIXct(temp$datetime, format = "%Y-%m-%dT%H:%M:%SZ", tz = "America/Los_Angeles")
-  
-   # Convert the timestamp to a POSIXct object
-  temp$timestamp <- ymd_hms(temp$timestamp, tz = "UTC")
-  
-  # Convert it to Pacific Time (PT)
-  temp$timestamp <- with_tz(temp$timestamp, tzone = "America/Los_Angeles")
   
   complete_timestamps <- seq(min(temp$timestamp), max(temp$timestamp), by = "1 sec")
   
@@ -136,29 +119,29 @@ for(xs in 1:nrow(scrutiny_startstop)){
     mutate(lat = na.approx(lat, rule = 2),
            lon = na.approx(lon, rule = 2))
   
-  interpolated_data$xs <- paste0(scrutiny_startstop[xs, "site"], "-xs", xs)
-  temp$xs <- paste0(scrutiny_startstop[xs, "site"], "-xs", xs)
+  interpolated_data$xs <- paste0(cdfw_startstop[xs, "site"], "-xs", xs)
+  temp$xs <- paste0(cdfw_startstop[xs, "site"], "-xs", xs)
   
-  interpolated_data$site <- scrutiny_startstop[xs, "site"]
-  temp$site = scrutiny_startstop[xs, "site"]
+  interpolated_data$site <- cdfw_startstop[xs, "site"]
+  temp$site = cdfw_startstop[xs, "site"]
   
-  scrutiny <- rbind(scrutiny, interpolated_data[, c("site", "xs", "timestamp", "lat", "lon")])
-  scrutiny_raw <- rbind(scrutiny_raw, temp)
+  cdfw <- rbind(cdfw, interpolated_data[, c("site", "xs", "timestamp", "lat", "lon")])
+  cdfw_raw <- rbind(cdfw_raw, temp)
   
   rm(temp, interpolated_data, merged_data)
 }
 
-scrutiny$boat = "Scrutiny"
-colnames(scrutiny) <- c("site", "xs", "timestamp", "lat_na", "lon_na", "boat")
+cdfw$boat = "cdfw"
+colnames(cdfw) <- c("site", "xs", "timestamp", "lat_na", "lon_na", "boat")
 
 ## Merge vessel tracks ----
 
 vessels <- merge(merge(stryker, 
                        phantom[, c("timestamp", "lat_ph", "lon_ph")], by = "timestamp", all.x = T),
-                 scrutiny[, c("timestamp", "lat_na", "lon_na")], by = "timestamp", all.x = T) 
+                 cdfw[, c("timestamp", "lat_na", "lon_na")], by = "timestamp", all.x = T) 
 
 xs_lookup <- data.frame(xs = c("809-xs6", "809-xs5", "809-xs4", "812-xs3", "812-xs2", "812-xs1"),
-                              xs_cor = c("809-xs1", "809-xs2", "809-xs3", "812-xs1", "812-xs2", "812-xs3"))
+                        xs_cor = c("809-xs1", "809-xs2", "809-xs3", "812-xs1", "812-xs2", "812-xs3"))
 
 vessels <- merge(vessels, xs_lookup, by = "xs", all.x = T)
 
@@ -174,52 +157,52 @@ ggplot(phantom, aes(x = lon_ph, y = lat_ph, color = xs)) +
   geom_point(data = phantom_raw, aes(x = lon, y = lat), size = .1) +
   facet_wrap(site ~ ., scales = "free")
 
-ggplot(scrutiny, aes(x = lon_na, y = lat_na, color = xs)) + 
+ggplot(cdfw, aes(x = lon_na, y = lat_na, color = xs)) + 
   geom_path() + theme_bw() + 
-  geom_point(data = scrutiny_raw, aes(x = lon, y = lat), color = "black", size = .1) +
+  geom_point(data = cdfw_raw, aes(x = lon, y = lat), color = "black", size = .1) +
   facet_wrap(site ~ ., scales = "free")
 
 # Calculate vessel spacing ------------------------------------------------
 
 vessels$stryker2phantom <- NA
-vessels$scrutiny2phantom <- NA
+vessels$cdfw2phantom <- NA
 vessels$stryker_velocity <- NA
 vessels$phantom_velocity <- NA
-vessels$scrutiny_velocity <- NA
+vessels$cdfw_velocity <- NA
 
 for(i in 1:nrow(vessels)){
   print(i)
- 
+  
   # if(complete.cases(vessels[,c("lon_st", "lat_st", "lon_ph","lat_ph")])[i]){
-    try(vessels[i,"stryker2phantom"] <- distm(c(vessels[i,"lon_st"], vessels[i,"lat_st"]), 
-                                                  c(vessels[i,"lon_ph"], vessels[i,"lat_ph"]), 
-                                                  fun = distHaversine))
+  try(vessels[i,"stryker2phantom"] <- distm(c(vessels[i,"lon_st"], vessels[i,"lat_st"]), 
+                                            c(vessels[i,"lon_ph"], vessels[i,"lat_ph"]), 
+                                            fun = distHaversine))
   # }
   
   # if(complete.cases(vessels[,c("lon_na", "lat_na", "lon_ph","lat_ph")])[i]){
-    try(vessels[i,"scrutiny2phantom"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
-                                          c(vessels[i,"lon_ph"], vessels[i,"lat_ph"]), 
-                                          fun = distHaversine))
+  try(vessels[i,"cdfw2phantom"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
+                                         c(vessels[i,"lon_ph"], vessels[i,"lat_ph"]), 
+                                         fun = distHaversine))
   # }
   
   # if(complete.cases(vessels[,c("lon_na", "lat_na", "lon_st","lat_st")])[i]){
-    try(vessels[i,"stryker2scrutiny"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
-                                           c(vessels[i,"lon_st"], vessels[i,"lat_st"]), 
-                                           fun = distHaversine))
+  try(vessels[i,"stryker2cdfw"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
+                                         c(vessels[i,"lon_st"], vessels[i,"lat_st"]), 
+                                         fun = distHaversine))
   # }
   
   try(vessels[i,"stryker_velocity"] <- distm(c(vessels[i,"lon_st"], vessels[i,"lat_st"]), 
-                                         c(vessels[i + 1,"lon_st"], vessels[i + 1,"lat_st"]), 
-                                         fun = distHaversine) * 2.23693629)
+                                             c(vessels[i + 1,"lon_st"], vessels[i + 1,"lat_st"]), 
+                                             fun = distHaversine) * 2.23693629)
   
   try(vessels[i,"phantom_velocity"] <- distm(c(vessels[i,"lon_ph"], vessels[i,"lat_ph"]), 
                                              c(vessels[i + 1,"lon_ph"], vessels[i + 1,"lat_ph"]), 
                                              fun = distHaversine) * 2.23693629)
   
-  try(vessels[i,"scrutiny_velocity"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
-                                             c(vessels[i + 1,"lon_na"], vessels[i + 1,"lat_na"]), 
-                                             fun = distHaversine) * 2.23693629)
-      
+  try(vessels[i,"cdfw_velocity"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
+                                          c(vessels[i + 1,"lon_na"], vessels[i + 1,"lat_na"]), 
+                                          fun = distHaversine) * 2.23693629)
+  
   
 }
 
@@ -227,20 +210,20 @@ for(i in 1:nrow(vessels)){
 # Plot vessel tracks, velocity, and spacing -------------------------------
 
 (v_spacing_809 <- ggplot(vessels[vessels$xs_cor %in% c("809-xs1","809-xs2","809-xs3"),], 
-       aes(x = timestamp, y = stryker2phantom)) + 
-    geom_line(color = "cyan4", linewidth = 1) +
-    geom_line(aes(y = scrutiny2phantom), linewidth = 1) +
-  # geom_line(aes(y = stryker2scrutiny), color = "blue",linewidth = 1) + 
-    theme_bw() + labs(y = "Distance (m)") + 
-    theme(axis.text.x = element_text(angle = 45, hjust = 1),
-          axis.text.y = element_text(angle = 90, hjust = .5)) +
-    ylim(0,250) +
-  facet_grid(. ~ xs_cor, scales = "free"))
+                         aes(x = timestamp, y = stryker2phantom)) + 
+   geom_line(color = "cyan4", linewidth = 1) +
+   geom_line(aes(y = cdfw2phantom), linewidth = 1) +
+   # geom_line(aes(y = stryker2cdfw), color = "blue",linewidth = 1) + 
+   theme_bw() + labs(y = "Distance (m)") + 
+   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+         axis.text.y = element_text(angle = 90, hjust = .5)) +
+   ylim(0,250) +
+   facet_grid(. ~ xs_cor, scales = "free"))
 
 (v_spacing_812 <- ggplot(vessels[vessels$xs_cor %in% c("812-xs1","812-xs2","812-xs3"),], 
                          aes(x = timestamp, y = stryker2phantom)) + 
     geom_line(color = "cyan4", linewidth = 1) +
-    geom_line(aes(y = scrutiny2phantom), linewidth = 1) + 
+    geom_line(aes(y = cdfw2phantom), linewidth = 1) + 
     theme_bw() + labs(y = "Distance (m)") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1),
           axis.text.y = element_text(angle = 90, hjust = .5)) +
@@ -248,7 +231,7 @@ for(i in 1:nrow(vessels)){
     facet_grid(. ~ xs_cor, scales = "free"))
 
 (v_velocity_809 <- ggplot(data = vessels[vessels$xs_cor %in% c("809-xs1","809-xs2","809-xs3") &
-                               vessels$stryker_velocity < 10 & is.na(vessels$stryker_velocity) == F,],
+                                           vessels$stryker_velocity < 10 & is.na(vessels$stryker_velocity) == F,],
                           aes(x = timestamp, y = stryker_velocity)) + 
     geom_line(color = "cyan4", linewidth = 1, alpha = .25) +
     geom_line(color = "cyan4", linewidth = 1, stat = "smooth", span = .25) +
@@ -259,8 +242,8 @@ for(i in 1:nrow(vessels)){
                                vessels$phantom_velocity < 10 & is.na(vessels$phantom_velocity) == F, ],
               aes(y = phantom_velocity), color = "salmon3", linewidth = 1, stat = "smooth", span = .25) +
     geom_line(data = vessels[vessels$xs_cor %in% c("809-xs1","809-xs2","809-xs3") &
-                               vessels$scrutiny_velocity < 10 & is.na(vessels$scrutiny_velocity) == F, ],
-              aes(y = scrutiny_velocity), linewidth = 1, alpha = .25) +
+                               vessels$cdfw_velocity < 10 & is.na(vessels$cdfw_velocity) == F, ],
+              aes(y = cdfw_velocity), linewidth = 1, alpha = .25) +
     theme_bw() + labs(y = "Velocity (mph)") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1),
           axis.text.y = element_text(angle = 90, hjust = .5)) +
@@ -269,7 +252,7 @@ for(i in 1:nrow(vessels)){
 
 (v_velocity_812 <- ggplot(data = vessels[vessels$xs_cor %in% c("812-xs1","812-xs2","812-xs3") &
                                            vessels$stryker_velocity < 10 & is.na(vessels$stryker_velocity) == F,], 
-                         aes(x = timestamp, y = stryker_velocity)) + 
+                          aes(x = timestamp, y = stryker_velocity)) + 
     geom_line(color = "cyan4", linewidth = 1, alpha = .25) +
     geom_line(color = "cyan4", linewidth = 1, stat = "smooth", span = .25) +
     geom_line(data = vessels[vessels$xs_cor %in% c("812-xs1","812-xs2","812-xs3") &
@@ -279,8 +262,8 @@ for(i in 1:nrow(vessels)){
                                vessels$phantom_velocity < 10 & is.na(vessels$phantom_velocity) == F, ],
               aes(y = phantom_velocity), color = "salmon3", linewidth = 1, stat = "smooth", span = .25) +
     geom_line(data = vessels[vessels$xs_cor %in% c("812-xs1","812-xs2","812-xs3") &
-                        vessels$scrutiny_velocity < 10 & is.na(vessels$scrutiny_velocity) == F, ],
-              aes(y = scrutiny_velocity), linewidth = 1) +
+                               vessels$cdfw_velocity < 10 & is.na(vessels$cdfw_velocity) == F, ],
+              aes(y = cdfw_velocity), linewidth = 1) +
     theme_bw() + labs(y = "Velocity (mph)") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1),
           axis.text.y = element_text(angle = 90, hjust = .5)) +
@@ -289,7 +272,7 @@ for(i in 1:nrow(vessels)){
 
 
 (v_tracks_809 <- ggplot(vessels[vessels$xs_cor %in% c("809-xs1","809-xs2","809-xs3"),], 
-                     aes(x = lon_st, y = lat_st)) + 
+                        aes(x = lon_st, y = lat_st)) + 
     geom_path(color = "cyan4", linewidth = 2) +
     geom_path(aes(x = lon_ph, y = lat_ph), color = "salmon3", alpha = .5, linewidth = 2) + 
     geom_path(aes(x = lon_na, y = lat_na), linewidth = 2) + 
@@ -309,7 +292,7 @@ for(i in 1:nrow(vessels)){
     facet_grid(. ~ xs_cor))
 
 
-png("output/eDNA_vessel_spacing_20250108_%02d.png",
+png("output/eDNA_vessel_spacing_20260226_%02d_updated.png",
     height = 7, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
@@ -318,7 +301,7 @@ cowplot::plot_grid(v_tracks_809, v_tracks_812,
 
 dev.off()
 
-png("output/eDNA_vessel_velocity_20250108_%02d.png",
+png("output/eDNA_vessel_velocity_20260226_%03d_updated.png",
     height = 10, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
