@@ -6,10 +6,10 @@ library(zoo)
 # Import and compile GPS track data ---------------------------------------
 
 ## Stryker ----
-stryker_startstop <- data.frame(boat = rep("stryker",7), 
-                                site = c(rep("812", 3), rep("809", 4)),
-                                start = c(7, 83, 163, 206, 300, 394, 480), 
-                                end = c(79, 159, 202, 296, 390, 476, 498))
+stryker_startstop <- data.frame(boat = rep("stryker",6), 
+                                site = c(rep("812", 3), rep("809", 3)),
+                                start = c(7, 56, 119, 146, 213, 285), 
+                                end = c(52, 115, 142, 209, 281, 352))
 
 stryker = data.frame()
 stryker_raw = data.frame()
@@ -17,21 +17,12 @@ stryker_raw = data.frame()
 for(xs in 1:nrow(stryker_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey03_20250205/RouteHistoryFullBkup_DWR Feb5.csv", 
+  temp <- read.csv("data/Survey04_20250226/20250226_DWR.csv", 
                    skip = stryker_startstop[xs, "start"] - 1, nrow = stryker_startstop[xs, "end"] - stryker_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
   
   temp$timestamp <- as.POSIXct(temp$datetime, format = "%Y-%m-%dT%H:%M:%SZ", tz = "America/Los_Angeles")
-  
-  df <- data.frame(
-    timestamp = c("2025-03-10T12:30:00Z", "2025-03-10T15:45:00Z"))
-  
-  # Convert the timestamp to a POSIXct object
-  temp$timestamp <- ymd_hms(temp$timestamp, tz = "UTC")
-  
-  # Convert it to Pacific Time (PT)
-  temp$timestamp_pacific <- with_tz(temp$timestamp, tzone = "America/Los_Angeles")
   
   complete_timestamps <- seq(min(temp$timestamp), max(temp$timestamp), by = "1 sec")
   
@@ -60,8 +51,8 @@ colnames(stryker) <- c("site", "xs", "timestamp", "lat_st", "lon_st", "boat")
 ## Phantom ----
 phantom_startstop <- data.frame(boat = rep("phantom", 6), 
                                 site = c(rep("812", 3), rep("809", 3)),
-                                start = c(7, 63, 146, 195, 304, 413), 
-                                end = c(59, 142, 191, 300, 409, 527))
+                                start = c(7, 48, 88, 117, 174, 222), 
+                                end = c(44, 84, 113, 170, 218, 261))
 
 phantom = data.frame()
 phantom_raw = data.frame()
@@ -69,7 +60,7 @@ phantom_raw = data.frame()
 for(xs in 1:nrow(phantom_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey03_20250205/20250205_RouteHistory_CFS.csv", 
+  temp <- read.csv("data/Survey04_20250226/20250226_CFS.csv", 
                    skip = phantom_startstop[xs, "start"] - 1, nrow = phantom_startstop[xs, "end"] - phantom_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -101,18 +92,17 @@ phantom$boat = "Phantom"
 colnames(phantom) <- c("site", "xs", "timestamp", "lat_ph", "lon_ph", "boat")
 
 ## cdfw ---- now 
-cdfw_startstop <- data.frame(boat = rep("cdfw", 2), 
-                             site = c(rep("812", 1), rep("809", 1)),
-                                 start = c(7,296), 
-                                 end = c(292,447))
-
+cdfw_startstop <- data.frame(boat = rep("cdfw", 6), 
+                             site = c(rep("812", 3), rep("809", 3)),
+                             start = c(1,8,20,33,44,57), 
+                             end = c(6,18,31,42,55,66))
 cdfw = data.frame()
 cdfw_raw = data.frame()
 
 for(xs in 1:nrow(cdfw_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey03_20250205/RouteHistoryFullBkup_CDFW Feb5.csv", 
+  temp <- read.csv("data/Survey04_20250226/20250226_CDFW_fixed.csv", 
                    skip = cdfw_startstop[xs, "start"] - 1, nrow = cdfw_startstop[xs, "end"] - cdfw_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -190,14 +180,14 @@ for(i in 1:nrow(vessels)){
   
   # if(complete.cases(vessels[,c("lon_na", "lat_na", "lon_ph","lat_ph")])[i]){
   try(vessels[i,"cdfw2phantom"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
-                                             c(vessels[i,"lon_ph"], vessels[i,"lat_ph"]), 
-                                             fun = distHaversine))
+                                         c(vessels[i,"lon_ph"], vessels[i,"lat_ph"]), 
+                                         fun = distHaversine))
   # }
   
   # if(complete.cases(vessels[,c("lon_na", "lat_na", "lon_st","lat_st")])[i]){
   try(vessels[i,"stryker2cdfw"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
-                                             c(vessels[i,"lon_st"], vessels[i,"lat_st"]), 
-                                             fun = distHaversine))
+                                         c(vessels[i,"lon_st"], vessels[i,"lat_st"]), 
+                                         fun = distHaversine))
   # }
   
   try(vessels[i,"stryker_velocity"] <- distm(c(vessels[i,"lon_st"], vessels[i,"lat_st"]), 
@@ -209,8 +199,8 @@ for(i in 1:nrow(vessels)){
                                              fun = distHaversine) * 2.23693629)
   
   try(vessels[i,"cdfw_velocity"] <- distm(c(vessels[i,"lon_na"], vessels[i,"lat_na"]), 
-                                              c(vessels[i + 1,"lon_na"], vessels[i + 1,"lat_na"]), 
-                                              fun = distHaversine) * 2.23693629)
+                                          c(vessels[i + 1,"lon_na"], vessels[i + 1,"lat_na"]), 
+                                          fun = distHaversine) * 2.23693629)
   
   
 }
@@ -301,7 +291,7 @@ for(i in 1:nrow(vessels)){
     facet_grid(. ~ xs_cor))
 
 
-png("output/eDNA_vessel_spacing_20250205_%02d.png",
+png("output/eDNA_vessel_spacing_20250226.png",
     height = 7, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
@@ -310,7 +300,7 @@ cowplot::plot_grid(v_tracks_809, v_tracks_812,
 
 dev.off()
 
-png("output/eDNA_vessel_velocity_20250205_%03d.png",
+png("output/eDNA_vessel_velocity_20250226.png",
     height = 10, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,

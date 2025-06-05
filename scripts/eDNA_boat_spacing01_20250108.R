@@ -17,7 +17,7 @@ stryker_raw = data.frame()
 for(xs in 1:nrow(stryker_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey01_20250108/RouteHistoryFullBkup_DWRBoat_Jan8.csv", 
+  temp <- read.csv("data/Survey01_20250108/20250108_DWR.csv", 
                    skip = stryker_startstop[xs, "start"] - 1, nrow = stryker_startstop[xs, "end"] - stryker_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -67,7 +67,7 @@ phantom_raw = data.frame()
 for(xs in 1:nrow(phantom_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey01_20250108/20250108_RouteHistory_CFS.csv", 
+  temp <- read.csv("data/Survey01_20250108/20250108_CFS.csv", 
                    skip = phantom_startstop[xs, "start"] - 1, nrow = phantom_startstop[xs, "end"] - phantom_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -114,7 +114,7 @@ scrutiny_raw = data.frame()
 for(xs in 1:nrow(scrutiny_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey01_20250108/RouteHistoryFullBkup_CDFW Jan8.csv", 
+  temp <- read.csv("data/Survey01_20250108/20250108_CDFW.csv", 
                    skip = scrutiny_startstop[xs, "start"] - 1, nrow = scrutiny_startstop[xs, "end"] - scrutiny_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -309,7 +309,7 @@ for(i in 1:nrow(vessels)){
     facet_grid(. ~ xs_cor))
 
 
-png("output/eDNA_vessel_spacing_20250108_%02d.png",
+png("output/eDNA_vessel_spacing_20250108.png",
     height = 7, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
@@ -318,7 +318,7 @@ cowplot::plot_grid(v_tracks_809, v_tracks_812,
 
 dev.off()
 
-png("output/eDNA_vessel_velocity_20250108_%02d.png",
+png("output/eDNA_vessel_velocity_20250108.png",
     height = 10, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,

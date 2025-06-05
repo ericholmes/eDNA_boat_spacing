@@ -17,7 +17,7 @@ stryker_raw = data.frame()
 for(xs in 1:nrow(stryker_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey05_20250319/RouteHistoryFullBkupDWR.csv", 
+  temp <- read.csv("data/Survey05_20250319/20250319_DWR.csv", 
                    skip = stryker_startstop[xs, "start"] - 1, nrow = stryker_startstop[xs, "end"] - stryker_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -60,7 +60,7 @@ phantom_raw = data.frame()
 for(xs in 1:nrow(phantom_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey05_20250319/20250319_RouteHistory_CFS.csv", 
+  temp <- read.csv("data/Survey05_20250319/20250319_CFS.csv", 
                    skip = phantom_startstop[xs, "start"] - 1, nrow = phantom_startstop[xs, "end"] - phantom_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -103,7 +103,7 @@ cdfw_raw = data.frame()
 for(xs in 1:nrow(cdfw_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey05_20250319/RouteHistoryFullBkup_CDFW.csv", 
+  temp <- read.csv("data/Survey05_20250319/20250319_CDFW.csv", 
                    skip = cdfw_startstop[xs, "start"] - 1, nrow = cdfw_startstop[xs, "end"] - cdfw_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")

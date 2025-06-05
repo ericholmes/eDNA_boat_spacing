@@ -24,7 +24,7 @@ for(xs in 1:nrow(stryker_startstop)){
   
   #loop each row
   
-  temp <- read.csv("data/Survey02_20250122/RouteHistoryFullBkup_DWRBoat_Jan22.csv", 
+  temp <- read.csv("data/Survey02_20250122/20250122_DWR.csv", 
                    skip = stryker_startstop[xs, "start"] - 1, nrow = stryker_startstop[xs, "end"] - stryker_startstop[xs, "start"], header = F)
   
   #not sure what this does- reads csv- 
@@ -81,7 +81,7 @@ phantom_raw = data.frame()
 for(xs in 1:nrow(phantom_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey02_20250122/20250122_RouteHistory_CFS.csv", 
+  temp <- read.csv("data/Survey02_20250122/20250122_CFS.csv", 
                    skip = phantom_startstop[xs, "start"] - 1, nrow = phantom_startstop[xs, "end"] - phantom_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -125,7 +125,7 @@ cdfw_raw = data.frame()
 for(xs in 1:nrow(cdfw_startstop)){
   print(xs)
   
-  temp <- read.csv("data/Survey02_20250122/RouteHistoryFullBkup_CDFW Jan22.csv", 
+  temp <- read.csv("data/Survey02_20250122/20250122_CDFW.csv", 
                    skip = cdfw_startstop[xs, "start"] - 1, nrow = cdfw_startstop[xs, "end"] - cdfw_startstop[xs, "start"], header = F)
   
   colnames(temp) = c("Junk", "lat", "lon", "datetime", "speed")
@@ -314,7 +314,7 @@ for(i in 1:nrow(vessels)){
     facet_grid(. ~ xs_cor))
 
 
-png("output/eDNA_vessel_spacing_20250122_%02d.png",
+png("output/eDNA_vessel_spacing_20250122.png",
     height = 7, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
@@ -323,7 +323,7 @@ cowplot::plot_grid(v_tracks_809, v_tracks_812,
 
 dev.off()
 
-png("output/eDNA_vessel_velocity_20250122_%03d.png",
+png("output/eDNA_vessel_velocity_20250122.png",
     height = 10, width = 10, units = "in", res = 1000, family = "serif")
 
 cowplot::plot_grid(v_tracks_809, v_tracks_812,
